@@ -13,7 +13,7 @@ while True:
     if not line: break
 
     if line[:6] == "Params":
-        pruning_percentage = float(line.split()[1][:-1])
+        pruning_percentage = float(line.split()[1][:-1]) / 100
         num_params = int(line.split()[3].split("/")[0][1:])
         datas.append({
             "pruning_percentage": pruning_percentage,
