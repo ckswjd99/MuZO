@@ -59,8 +59,8 @@ def _zo_perturb_rand(model, perturb_seed, smoothing=1.0, mask=None):
     
     for name, param in model.named_parameters():
         z = torch.normal(mean=0, std=1, size=param.data.size(), device=param.data.device, dtype=param.data.dtype)
-        if mask is not None:
-            z = z * mask[name]
+        if mask is not None and name.replace('_orig', '_mask') in mask:
+            z = z * mask[name.replace('_orig', '_mask')]
         param.data += z * smoothing
 
 def _zo_update(model, perturb_seed, projected_gradient, learning_rate, weight_decay, momentum_buffer, momentum, one_way=False, mask=None):
@@ -71,8 +71,8 @@ def _zo_update(model, perturb_seed, projected_gradient, learning_rate, weight_de
 
     for name, param in model.named_parameters():
         z = torch.normal(mean=0, std=1, size=param.data.size(), device=param.data.device, dtype=param.data.dtype)
-        if mask is not None:
-            z = z * mask[name]
+        if mask is not None and name.replace('_orig', '_mask') in mask:
+            z = z * mask[name.replace('_orig', '_mask')]
         estimated_gradient = projected_gradient * z
         momentum_buffer[name] = momentum * momentum_buffer[name] + (1-momentum) * estimated_gradient
 
